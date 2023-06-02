@@ -203,25 +203,54 @@ class DrivePage(customtkinter.CTkFrame):
         elif customtkinter.get_appearance_mode() == "Dark":
             self.center_meter.configure(bg="#242424")
 
+    # def obd_update(self):
+    #     # OBD-II 데이터를 읽고 라벨에 표시합니다.
+    #     data = {}
+    #     for key, label in self.labels.items():
+    #         response = self.connection.query(obd.commands[key])
+    #         value = str(response.value)
+    #         value1 = re.sub(r'[^0-9]', '', value)
+    #
+    #         if key == "RPM":
+    #             self.center_meter.set(value)
+    #         # value = re.sub(r'[^0-9]', '', str(response.value))
+    #         label.configure(text=value1)
+    #         # print(value[0])
+    #         data[key] = value1
+    #
+    #     # df_row = pd.DataFrame(data, index=[0])
+    #     # self.df.append(df_row, ignore_index=True)
+    #     # 1초마다 라벨을 업데이트합니다.
+    #     self.after(100, self.obd_update)
+
     def obd_update(self):
         # OBD-II 데이터를 읽고 라벨에 표시합니다.
         data = {}
         for key, label in self.labels.items():
             response = self.connection.query(obd.commands[key])
-            value = str(response.value)
-            value1 = re.sub(r'[^0-9]', '', value)
+            if response.is_null():
+                continue
+            value = response.value
+            if response.unit:
+                value_str = f"{value} {response.unit}"
+            else:
+                value_str = str(value)
 
             if key == "RPM":
                 self.center_meter.set(value)
-            # value = re.sub(r'[^0-9]', '', str(response.value))
-            label.configure(text=value1)
-            # print(value[0])
-            data[key] = value1
+                self.center_slider.set(value)
+                self.labels["RPM"].configure(text=value_str)
+            elif key == "SPEED":
+                self.labels["SPEED"].configure(text=value_str)
+            elif key in ["INTAKE_TEMP", "CATALYST_TEMP_B1S1", "OIL_TEMP"]:
+                self.labels[key].configure(text=value_str)
+            elif key == "FUEL_PRESSURE":
+                self.labels[key].configure(text=value_str)
+            elif key == "RUN_TIME":
+                self.labels[key].configure(text=value_str)
 
-        # df_row = pd.DataFrame(data, index=[0])
-        # self.df.append(df_row, ignore_index=True)
-        # 1초마다 라벨을 업데이트합니다.
-        self.after(100, self.obd_update)
+        self.after(100, self.obd_update)  # Call this function again after 1 second.
+
 
     # 재귀함수 식
     def after_test1(self):
