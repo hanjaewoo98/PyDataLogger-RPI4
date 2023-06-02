@@ -269,6 +269,14 @@ class DrivePage(customtkinter.CTkFrame):
     #     if not is_recording:
     #         is_recording = True
     #         self.obd_update()
+
+    def is_float(value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+
     def obd_update(self):
         # Reads OBD-II data and displays it on the labels.
         for key, label in self.labels.items():
@@ -278,7 +286,12 @@ class DrivePage(customtkinter.CTkFrame):
             label.configure(text=value)
 
             if key == "RPM":
-                self.center_meter.set(int(value))
+                if value.isdigit():
+                    self.center_meter.set(int(value))
+                elif self.is_float(value):
+                    self.center_meter.set(float(value))
+                else:
+                    print("Invalid value for conversion: ", value)
 
     def start_recording(self):
         self.is_recording = True
