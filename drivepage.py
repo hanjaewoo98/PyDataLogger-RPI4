@@ -223,50 +223,71 @@ class DrivePage(customtkinter.CTkFrame):
     #     # 1초마다 라벨을 업데이트합니다.
     #     self.after(100, self.obd_update)
 
+    # def obd_update(self):
+    #     # OBD-II 데이터를 읽고 라벨에 표시합니다.
+    #     data = {}
+    #     for key, label in self.labels.items():
+    #         response = self.connection.query(obd.commands[key])
+    #         if response.is_null():
+    #             continue
+    #         value = response.value
+    #         if response.unit:
+    #             value_str = f"{value} {response.unit}"
+    #         else:
+    #             value_str = str(value)
+    #
+    #         if key == "RPM":
+    #             self.center_meter.set(value)
+    #             self.center_slider.set(value)
+    #             self.labels["RPM"].configure(text=value_str)
+    #         elif key == "SPEED":
+    #             self.labels["SPEED"].configure(text=value_str)
+    #         elif key in ["INTAKE_TEMP", "CATALYST_TEMP_B1S1", "OIL_TEMP"]:
+    #             self.labels[key].configure(text=value_str)
+    #         elif key == "FUEL_PRESSURE":
+    #             self.labels[key].configure(text=value_str)
+    #         elif key == "RUN_TIME":
+    #             self.labels[key].configure(text=value_str)
+    #
+    #     self.after(100, self.obd_update)  # Call this function again after 1 second.
+    #
+    # # 재귀함수 식
+    # def after_test1(self):
+    #     print("hi")
+    #     self.after(1000, self.after_test1)
+    #
+    # def save_data(self):
+    #     # DataFrame을 엑셀 파일로 저장
+    #     self.df.to_excel("obd_data.xlsx", index=False)
+    #
+    # def stop_recording(self):
+    #     global is_recording
+    #     is_recording = False
+    #
+    # def start_recording(self):
+    #     global is_recording
+    #     if not is_recording:
+    #         is_recording = True
+    #         self.obd_update()
     def obd_update(self):
-        # OBD-II 데이터를 읽고 라벨에 표시합니다.
-        data = {}
+        # Reads OBD-II data and displays it on the labels.
         for key, label in self.labels.items():
             response = self.connection.query(obd.commands[key])
-            if response.is_null():
-                continue
-            value = response.value
-            if response.unit:
-                value_str = f"{value} {response.unit}"
-            else:
-                value_str = str(value)
+            value = str(response.value)
+            value = re.sub(r'[^0-9.]', '', value)  # removes all non-digit and non-dot characters
+            label.configure(text=value)
 
             if key == "RPM":
                 self.center_meter.set(value)
-                self.center_slider.set(value)
-                self.labels["RPM"].configure(text=value_str)
-            elif key == "SPEED":
-                self.labels["SPEED"].configure(text=value_str)
-            elif key in ["INTAKE_TEMP", "CATALYST_TEMP_B1S1", "OIL_TEMP"]:
-                self.labels[key].configure(text=value_str)
-            elif key == "FUEL_PRESSURE":
-                self.labels[key].configure(text=value_str)
-            elif key == "RUN_TIME":
-                self.labels[key].configure(text=value_str)
-
-        self.after(100, self.obd_update)  # Call this function again after 1 second.
-
-
-    # 재귀함수 식
-    def after_test1(self):
-        print("hi")
-        self.after(1000, self.after_test1)
-
-    def save_data(self):
-        # DataFrame을 엑셀 파일로 저장
-        self.df.to_excel("obd_data.xlsx", index=False)
-
-    def stop_recording(self):
-        global is_recording
-        is_recording = False
 
     def start_recording(self):
-        global is_recording
-        if not is_recording:
-            is_recording = True
+        self.is_recording = True
+        self.recording_loop()
+
+    def stop_recording(self):
+        self.is_recording = False
+
+    def recording_loop(self):
+        if self.is_recording:
             self.obd_update()
+            self.after(100, self.recording_loop)
