@@ -31,7 +31,6 @@ class DrivePage(customtkinter.CTkFrame):
         self.label_texts = {
             "RPM": "RPM",
             "SPEED": "SPEED",
-            "INTAKE_TEMP": "INTAKE_TEMP",
             "CATALYST_TEMP_B1S1": "CATALYST_TEMP_B1S1",
             "OIL_TEMP": "OIL_TEMP",
             "INTAKE_TEMP": "INTAKE_TEMP",
@@ -100,7 +99,7 @@ class DrivePage(customtkinter.CTkFrame):
         self.left_label_2_2 = customtkinter.CTkLabel(self.leftbar_frame, text="촉매온도(℃)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
         self.left_label_2_2.grid(row=10 + pad_value, column=1, padx=10, sticky="ws")
-        self.left_label_3_1 = customtkinter.CTkLabel(self.leftbar_frame, text="120", width=100,
+        self.left_label_3_1 = customtkinter.CTkLabel(self.leftbar_frame, width=100,
                                                      font=customtkinter.CTkFont(size=40, weight="bold"))
         self.left_label_3_1.grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
 
@@ -283,6 +282,8 @@ class DrivePage(customtkinter.CTkFrame):
             response = self.connection.query(obd.commands[key])
             value = str(response.value)
             value = re.sub(r'[^0-9.]', '', value)  # removes all non-digit and non-dot characters
+            if key == "CATALYST_TEMP_B1S1":
+                value = value[:3]  # 최대 3글자로 제한
             label.configure(text=value)
 
             if key == "RPM":
