@@ -2,7 +2,7 @@ import customtkinter
 import drivepage
 
 
-class Setting_Page(customtkinter.CTkFrame):
+class SettingPage(customtkinter.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
         # configure grid layout (4x4)
@@ -63,7 +63,7 @@ class Setting_Page(customtkinter.CTkFrame):
 
         self.bottombar_button_1 = customtkinter.CTkButton(self.bottombar_frame, text="주행", corner_radius=0,
                                                           font=customtkinter.CTkFont(size=20, weight="bold"),
-                                                          command=lambda: parent.switch_frame(drive_page.Drive_Page))
+                                                          command=lambda: parent.switch_frame(drivepage.DrivePage))
         self.bottombar_button_1.grid(row=0, column=0, padx=1, sticky="news")  # padx 버튼 사이 간격
 
         self.bottombar_button_2 = customtkinter.CTkButton(self.bottombar_frame, text="랩타임측정", corner_radius=0,

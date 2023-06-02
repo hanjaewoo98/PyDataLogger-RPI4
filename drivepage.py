@@ -11,7 +11,7 @@ import re
 is_recording = False
 
 
-class Drive_Page(customtkinter.CTkFrame):
+class DrivePage(customtkinter.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -71,7 +71,7 @@ class Drive_Page(customtkinter.CTkFrame):
         self.bottombar_button_3.grid(row=0, column=2, padx=1, sticky="news")
         self.bottombar_button_4 = customtkinter.CTkButton(self.bottombar_frame, text="설정", corner_radius=0,
                                                           font=customtkinter.CTkFont(size=20, weight="bold"),
-                                                          command=lambda: parent.switch_frame(settingpage.Setting_Page))
+                                                          command=lambda: parent.switch_frame(settingpage.SettingPage))
         self.bottombar_button_4.grid(row=0, column=3, padx=1, sticky="news")
 
         # 간격
@@ -198,9 +198,9 @@ class Drive_Page(customtkinter.CTkFrame):
     # Custom Tkiner 호환용 함수(배경색 맞추기)
     def meter_bg_change(self):
         print(customtkinter.get_appearance_mode())
-        if (customtkinter.get_appearance_mode() == "Light"):
+        if customtkinter.get_appearance_mode() == "Light":
             self.center_meter.configure(bg="#EBEBEB")
-        elif (customtkinter.get_appearance_mode() == "Dark"):
+        elif customtkinter.get_appearance_mode() == "Dark":
             self.center_meter.configure(bg="#242424")
 
     def obd_update(self):
@@ -209,14 +209,14 @@ class Drive_Page(customtkinter.CTkFrame):
         for key, label in self.labels.items():
             response = self.connection.query(obd.commands[key])
             value = str(response.value)
-            # value1 = re.sub(r'[^0-9]','',value)
+            value1 = re.sub(r'[^0-9]', '', value)
 
-            if (key == "RPM"):
-                self.center_meter.set(int(value[:3]))
-            value = re.sub(r'[^0-9]', '', str(response.value))
-            label.configure(text=value)
+            if key == "RPM":
+                self.center_meter.set(value)
+            # value = re.sub(r'[^0-9]', '', str(response.value))
+            label.configure(text=value1)
             # print(value[0])
-            data[key] = value
+            data[key] = value1
 
         # df_row = pd.DataFrame(data, index=[0])
         # self.df.append(df_row, ignore_index=True)
