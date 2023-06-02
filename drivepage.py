@@ -270,7 +270,7 @@ class DrivePage(customtkinter.CTkFrame):
     #         is_recording = True
     #         self.obd_update()
 
-    def is_float(value):
+    def is_float(self, value):
         try:
             float(value)
             return True
