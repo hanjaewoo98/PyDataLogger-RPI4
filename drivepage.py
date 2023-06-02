@@ -278,7 +278,7 @@ class DrivePage(customtkinter.CTkFrame):
             label.configure(text=value)
 
             if key == "RPM":
-                self.center_meter.set(value)
+                self.center_meter.set(int(value))
 
     def start_recording(self):
         self.is_recording = True
