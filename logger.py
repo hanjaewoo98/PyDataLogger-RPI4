@@ -1,11 +1,15 @@
 import obd
 import customtkinter as ctk
 import tkinter as tk
+import pandas as pd
 
 obd.logger.setLevel(obd.logging.DEBUG)
 ports = obd.scan_serial()
 print(ports)
 connection = obd.OBD(portstr=ports[0], baudrate=38400, fast=False, timeout=10)
+
+# 엑셀 파일을 저장하기 위한 DataFrame 생성
+df = pd.DataFrame()
 
 root = tk.Tk()
 root.title("OBD-II Data")
@@ -24,15 +28,52 @@ for key, text in label_texts.items():
     label.pack()
     labels[key] = label
 
+is_recording = False
+
+
+def start_recording():
+    global is_recording
+    if not is_recording:
+        is_recording = True
+        update_labels()
+
+
+def stop_recording():
+    global is_recording
+    is_recording = False
+
 
 def update_labels():
-    for key, label in labels.items():
-        response = connection.query(obd.commands[key])
-        label.configure(text=label_texts[key] + str(response.value))
+    if is_recording:
+        data = {}
+        for key, label in labels.items():
+            response = connection.query(obd.commands[key])
+            value = str(response.value)
+            label.configure(text=label_texts[key] + value)
+            data[key] = value
 
-    root.after(100, update_labels)
+        # DataFrame에 현재 데이터 추가
+        df_row = pd.DataFrame(data, index=[0])
+        df.append(df_row, ignore_index=True)
+
+    # 1초마다 라벨을 업데이트
+    root.after(1000, update_labels)
 
 
-update_labels()
+def save_data():
+    # DataFrame을 엑셀 파일로 저장
+    df.to_excel("obd_data.xlsx", index=False)
+
+
+# 시작 버튼
+start_button = tk.Button(root, text="Start Recording", command=start_recording)
+start_button.pack()
+
+# 종료 버튼
+stop_button = tk.Button(root, text="Stop Recording", command=stop_recording)
+stop_button.pack()
+
+# 10초 후에 데이터 저장 함수 호출
+root.after(10000, save_data)
 
 root.mainloop()
