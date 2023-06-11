@@ -262,7 +262,7 @@ class DrivePage(customtkinter.CTkFrame):
                 else:
                     print("Invalid value for conversion: ", value)
             if key == "ENGINE_LOAD":
-                value = self.convert_to_int(value)
+                self.convert_to_int(value)
 
     def convert_to_int(self, value):
         try:
