@@ -20,7 +20,6 @@ class DrivePage(customtkinter.CTkFrame):
         self.ports = obd.scan_serial()
         self.connection = obd.OBD(portstr=self.ports[0], baudrate=38400, fast=False, timeout=10)
 
-
         # lables 초기화
         self.labels = {}
         # RPM, 속도, 흡기온, 촉매온도, 유온, 공기온, 유압, 엔진가동시간
@@ -260,6 +259,13 @@ class DrivePage(customtkinter.CTkFrame):
                     self.center_meter.set(int(value))
                 elif self.is_float(value):
                     self.center_meter.set(float(value))
+                else:
+                    print("Invalid value for conversion: ", value)
+            if key == "ENGINE_LOAD":
+                if value.isdigit():
+                    self.center_meter.set(int(value))
+                elif self.is_float(value):
+                    self.center_meter.set(int(value))
                 else:
                     print("Invalid value for conversion: ", value)
 
