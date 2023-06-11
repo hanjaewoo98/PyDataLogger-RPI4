@@ -262,12 +262,17 @@ class DrivePage(customtkinter.CTkFrame):
                 else:
                     print("Invalid value for conversion: ", value)
             if key == "ENGINE_LOAD":
-                if value.isdigit():
-                    value = int(value)
-                elif self.is_float(value):
-                    value = int(float(value))
-                else:
-                    print("Invalid value for conversion: ", value)
+                value = self.convert_to_int(value)
+
+    def convert_to_int(self, value):
+        try:
+            if value.isdigit():
+                return int(value)
+            else:
+                return int(float(value))
+        except ValueError:
+            print("Invalid value for conversion: ", value)
+            return None
 
     def start_recording(self):
         self.is_recording = True
