@@ -35,7 +35,7 @@ class DrivePage(customtkinter.CTkFrame):
             "COOLANT_TEMP": "COOLANT_TEMP",  # 냉각수온도, 가져와짐
             "THROTTLE_POS": "THROTTLE_POS",  # 스로틀위치, 가져와짐
             "ENGINE_LOAD": "ENGINE_LOAD",  # 엔진부하, 가져와짐
-            "FUEL_RATE": "FUEL_RATE",  # 연료유량, 가져와짐
+            "FUEL_RATE": "FUEL_RATE",  # 연료유량, 안가져와짐
         }
 
         for key, text in self.label_texts.items():
@@ -214,9 +214,6 @@ class DrivePage(customtkinter.CTkFrame):
         self.center_label_2_2.grid(row=1, column=1, sticky="news")
 
         # 슬라이더 테스트
-
-        self.center_slider.configure(command=self.test_label_change)
-        self.bind("<FocusIn>", self.meter_bg_change)
         # self.center_slider.configure(command=self.test_label_change)
         # self.bind("<FocusIn>", self.meter_bg_change)
 
@@ -252,13 +249,7 @@ class DrivePage(customtkinter.CTkFrame):
             if key == "CATALYST_TEMP_B1S1":
                 value = value[:3]  # 최대 3글자로 제한
             label.configure(text=value)
-            if key == "SPEED":
-                if value.isdigit():
-                    self.center_meter.set(int(value))
-                elif self.is_float(value):
-                    self.center_meter.set(float(value))
-                else:
-                    print("Invalid value for conversion: ", value)
+
             if key == "RPM":
                 if value.isdigit():
                     self.center_meter.set(int(value))
