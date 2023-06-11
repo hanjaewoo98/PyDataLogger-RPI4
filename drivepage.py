@@ -29,13 +29,16 @@ class DrivePage(customtkinter.CTkFrame):
         self.labels = {}
         # RPM, 속도, 흡기온, 촉매온도, 유온, 공기온, 유압, 엔진가동시간
         self.label_texts = {
-            "RPM": "RPM",
-            "SPEED": "SPEED",
-            "CATALYST_TEMP_B1S1": "CATALYST_TEMP_B1S1",
-            "OIL_TEMP": "OIL_TEMP",
-            "INTAKE_TEMP": "INTAKE_TEMP",
-            "FUEL_PRESSURE": "FUEL_PRESSURE",
-            "RUN_TIME": "RUN_TIME",
+            "RPM": "RPM",  # RPM, 가져와짐
+            "SPEED": "SPEED",  # 속도, 가져와짐
+            "CATALYST_TEMP_B1S1": "CATALYST_TEMP_B1S1",  # 촉매온도, 가져와짐
+            # "OIL_TEMP": "OIL_TEMP",  # 유온, 안가져와짐
+            "INTAKE_TEMP": "INTAKE_TEMP",  # 흡기온, 가져와짐
+            "INTAKE_PRESSURE": "INTAKE_PRESSURE",  # 매니폴드압,가져와짐
+            "RUN_TIME": "RUN_TIME",  # 가동시간, 가져와짐
+            "COOLANT_TEMP": "COOLANT_TEMP",  # 냉각수온도, 가져와짐
+            "THROTTLE_POS": "THROTTLE_POS",  # 스로틀위치, 가져와짐
+            "ENGINE_LOAD": "ENGINE_LOAD",  # 엔진부하, 가져와짐
         }
 
         for key, text in self.label_texts.items():
@@ -103,11 +106,11 @@ class DrivePage(customtkinter.CTkFrame):
                                                      font=customtkinter.CTkFont(size=40, weight="bold"))
         self.left_label_3_1.grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
 
-        self.labels["OIL_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, text="유온(℃)", width=50,
-                                                         font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.labels["COOLANT_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
+                                                             font=customtkinter.CTkFont(size=20, weight="bold"))
         # self.left_label_3_2 = customtkinter.CTkLabel(self.leftbar_frame, text="유온(℃)", width=50,
         #                                             font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.labels["OIL_TEMP"].grid(row=10 + pad_value * 2, column=1, padx=10, sticky="ws")
+        self.labels["COOLANT_TEMP"].grid(row=10 + pad_value * 2, column=1, padx=10, sticky="ws")
 
         # 우측 값들
         self.rightbar_frame = customtkinter.CTkFrame(self)
@@ -126,10 +129,10 @@ class DrivePage(customtkinter.CTkFrame):
 
         # self.right_label_2_1 = customtkinter.CTkLabel(self.rightbar_frame, text="120", width=100,
         #                                              font=customtkinter.CTkFont(size=40, weight="bold"))
-        self.labels["FUEL_PRESSURE"] = customtkinter.CTkLabel(self.rightbar_frame, width=100,
-                                                              font=customtkinter.CTkFont(size=40, weight="bold"))
-        self.labels["FUEL_PRESSURE"].grid(row=10 + pad_value, column=0, padx=10, sticky="nes")
-        self.right_label_2_2 = customtkinter.CTkLabel(self.rightbar_frame, text="유압(kPa)", width=50,
+        self.labels["INTAKE_PRESSURE"] = customtkinter.CTkLabel(self.rightbar_frame, width=100,
+                                                                font=customtkinter.CTkFont(size=40, weight="bold"))
+        self.labels["INTAKE_PRESSURE"].grid(row=10 + pad_value, column=0, padx=10, sticky="nes")
+        self.right_label_2_2 = customtkinter.CTkLabel(self.rightbar_frame, text="매니폴드압력(kPa)", width=50,
                                                       font=customtkinter.CTkFont(size=20, weight="bold"))
         self.right_label_2_2.grid(row=10 + pad_value, column=1, padx=10, sticky="es")
 
@@ -156,8 +159,8 @@ class DrivePage(customtkinter.CTkFrame):
                                        )
         self.meter_bg_change()
         self.center_meter.grid(row=10, column=19)
-        self.center_slider = customtkinter.CTkSlider(self, from_=0, to=9000, number_of_steps=9000)
-        self.center_slider.grid(row=11, column=19)
+        # self.center_slider = customtkinter.CTkSlider(self, from_=0, to=9000, number_of_steps=9000)
+        # self.center_slider.grid(row=11, column=19)
 
         self.center_label_frame = customtkinter.CTkLabel(self)
         self.center_label_frame.grid(row=12, column=2, rowspan=24, columnspan=36, sticky="news")
@@ -183,8 +186,8 @@ class DrivePage(customtkinter.CTkFrame):
         self.center_label_2_2.grid(row=1, column=1, sticky="news")
 
         # 슬라이더 테스트
-        self.center_slider.configure(command=self.test_label_change)
-        self.bind("<FocusIn>", self.meter_bg_change)
+        # self.center_slider.configure(command=self.test_label_change)
+        # self.bind("<FocusIn>", self.meter_bg_change)
 
         # after 테스트
         # self.after_test1()
@@ -201,73 +204,6 @@ class DrivePage(customtkinter.CTkFrame):
             self.center_meter.configure(bg="#EBEBEB")
         elif customtkinter.get_appearance_mode() == "Dark":
             self.center_meter.configure(bg="#242424")
-
-    # def obd_update(self):
-    #     # OBD-II 데이터를 읽고 라벨에 표시합니다.
-    #     data = {}
-    #     for key, label in self.labels.items():
-    #         response = self.connection.query(obd.commands[key])
-    #         value = str(response.value)
-    #         value1 = re.sub(r'[^0-9]', '', value)
-    #
-    #         if key == "RPM":
-    #             self.center_meter.set(value)
-    #         # value = re.sub(r'[^0-9]', '', str(response.value))
-    #         label.configure(text=value1)
-    #         # print(value[0])
-    #         data[key] = value1
-    #
-    #     # df_row = pd.DataFrame(data, index=[0])
-    #     # self.df.append(df_row, ignore_index=True)
-    #     # 1초마다 라벨을 업데이트합니다.
-    #     self.after(100, self.obd_update)
-
-    # def obd_update(self):
-    #     # OBD-II 데이터를 읽고 라벨에 표시합니다.
-    #     data = {}
-    #     for key, label in self.labels.items():
-    #         response = self.connection.query(obd.commands[key])
-    #         if response.is_null():
-    #             continue
-    #         value = response.value
-    #         if response.unit:
-    #             value_str = f"{value} {response.unit}"
-    #         else:
-    #             value_str = str(value)
-    #
-    #         if key == "RPM":
-    #             self.center_meter.set(value)
-    #             self.center_slider.set(value)
-    #             self.labels["RPM"].configure(text=value_str)
-    #         elif key == "SPEED":
-    #             self.labels["SPEED"].configure(text=value_str)
-    #         elif key in ["INTAKE_TEMP", "CATALYST_TEMP_B1S1", "OIL_TEMP"]:
-    #             self.labels[key].configure(text=value_str)
-    #         elif key == "FUEL_PRESSURE":
-    #             self.labels[key].configure(text=value_str)
-    #         elif key == "RUN_TIME":
-    #             self.labels[key].configure(text=value_str)
-    #
-    #     self.after(100, self.obd_update)  # Call this function again after 1 second.
-    #
-    # # 재귀함수 식
-    # def after_test1(self):
-    #     print("hi")
-    #     self.after(1000, self.after_test1)
-    #
-    # def save_data(self):
-    #     # DataFrame을 엑셀 파일로 저장
-    #     self.df.to_excel("obd_data.xlsx", index=False)
-    #
-    # def stop_recording(self):
-    #     global is_recording
-    #     is_recording = False
-    #
-    # def start_recording(self):
-    #     global is_recording
-    #     if not is_recording:
-    #         is_recording = True
-    #         self.obd_update()
 
     def is_float(self, value):
         try:
@@ -304,4 +240,4 @@ class DrivePage(customtkinter.CTkFrame):
     def recording_loop(self):
         if self.is_recording:
             self.obd_update()
-            self.after(100, self.recording_loop)
+            self.after(10, self.recording_loop)
