@@ -18,12 +18,8 @@ class DrivePage(customtkinter.CTkFrame):
         # obd 초기화
         obd.logger.setLevel(obd.logging.DEBUG)
         self.ports = obd.scan_serial()
-        # print(self.ports)
-        # self.connection = obd.OBD(portstr=self.ports[0], baudrate=38400, fast=False, timeout=10)
         self.connection = obd.OBD(portstr=self.ports[0], baudrate=38400, fast=False, timeout=10)
 
-        # if self.connection.is_connected():
-        #    self.connection = obd.OBD(portstr=self.ports[0], baudrate=38400, fast=False, timeout=10)
 
         # lables 초기화
         self.labels = {}
@@ -96,8 +92,6 @@ class DrivePage(customtkinter.CTkFrame):
 
         self.labels["CATALYST_TEMP_B1S1"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
                                                                    font=customtkinter.CTkFont(size=40, weight="bold"))
-        # self.left_label_2_1 = customtkinter.CTkLabel(self.leftbar_frame, text="70", width=100,
-        #                                             font=customtkinter.CTkFont(size=40, weight="bold"))
         self.labels["CATALYST_TEMP_B1S1"].grid(row=10 + pad_value, column=0, padx=10, sticky="nws")
         self.left_label_2_2 = customtkinter.CTkLabel(self.leftbar_frame, text="촉매온도(℃)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
@@ -108,9 +102,10 @@ class DrivePage(customtkinter.CTkFrame):
 
         self.labels["COOLANT_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
                                                              font=customtkinter.CTkFont(size=20, weight="bold"))
-        # self.left_label_3_2 = customtkinter.CTkLabel(self.leftbar_frame, text="유온(℃)", width=50,
-        #                                             font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.labels["COOLANT_TEMP"].grid(row=10 + pad_value * 2, column=1, padx=10, sticky="ws")
+        self.labels["COOLANT_TEMP"].grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
+        self.left_label_3_2 = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
+                                                     font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.left_label_3_2.grid(row=10 + pad_value * 2, column=1, padx=10, sticky="ws")
 
         # 우측 값들
         self.rightbar_frame = customtkinter.CTkFrame(self)
@@ -221,12 +216,18 @@ class DrivePage(customtkinter.CTkFrame):
             if key == "CATALYST_TEMP_B1S1":
                 value = value[:3]  # 최대 3글자로 제한
             label.configure(text=value)
-
+            if key == "SPEED":
+                if value.isdigit():
+                    self.center_meter.set(int(value))
+                elif self.is_float(value):
+                    self.center_meter.set(float(value)[:-2])
+                else:
+                    print("Invalid value for conversion: ", value)
             if key == "RPM":
                 if value.isdigit():
                     self.center_meter.set(int(value))
                 elif self.is_float(value):
-                    self.center_meter.set(float(value))
+                    self.center_meter.set(float(value)[:-2])
                 else:
                     print("Invalid value for conversion: ", value)
 
@@ -240,4 +241,4 @@ class DrivePage(customtkinter.CTkFrame):
     def recording_loop(self):
         if self.is_recording:
             self.obd_update()
-            self.after(70, self.recording_loop)
+            self.after(50, self.recording_loop)
