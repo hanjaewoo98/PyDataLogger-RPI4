@@ -21,6 +21,13 @@ label_texts = {
     "CATALYST_TEMP_B1S1": "CATALYST_TEMP_B1S1: ",
     "OIL_TEMP": "OIL_TEMP: ",
     "INTAKE_TEMP": "INTAKE_TEMP: ",
+    "ENGINE_LOAD": "ENGINE_LOAD: ",
+    "THROTTLE_POS": "THROTTLE_POS: ",
+    "AIR_STATUS": "AIR_STATUS:",
+    "RUN_TIME": "RUN_TIME:",
+    "AMBIANT_AIR_TEMP": "AMBIANT_AIR_TEMP:",
+    "COOLANT_TEMP": "COOLANT_TEMP:",
+    "INTAKE_PRESSURE": "INTAKE_PRESSURE:",
 }
 
 for key, text in label_texts.items():
@@ -57,12 +64,13 @@ def update_labels():
         df.append(df_row, ignore_index=True)
 
     # 1초마다 라벨을 업데이트
-    root.after(1000, update_labels)
+    root.after(100, update_labels)
 
 
 def save_data():
     # DataFrame을 엑셀 파일로 저장
-    df.to_excel("obd_data.xlsx", index=False)
+    # df.to_excel("obd_data.xlsx", index=False)
+    df.to_json("obd_data.json", orient="records")
 
 
 # 시작 버튼
