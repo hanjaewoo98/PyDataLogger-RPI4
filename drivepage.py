@@ -118,10 +118,10 @@ class DrivePage(customtkinter.CTkFrame):
         self.leftbar_frame.grid_columnconfigure(list(range(0, 2)), weight=1)
         self.leftbar_frame.grid_rowconfigure(list(range(0, 40)), weight=1)
 
-        self.labels["INTAKE_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
+        self.labels["ENGINE_LOAD"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
                                                             font=customtkinter.CTkFont(size=40, weight="bold"))
-        self.labels["INTAKE_TEMP"].grid(row=10, column=0, padx=10, sticky="nws")
-        self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="흡기온도(℃)", width=50,
+        self.labels["ENGINE_LOAD"].grid(row=10, column=0, padx=10, sticky="nws")
+        self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="엔진부하(%)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
         self.left_label_1_2.grid(row=10, column=1, padx=10, sticky="ws")
 
