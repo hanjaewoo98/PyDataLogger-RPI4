@@ -214,6 +214,9 @@ class DrivePage(customtkinter.CTkFrame):
         self.center_label_2_2.grid(row=1, column=1, sticky="news")
 
         # 슬라이더 테스트
+
+        self.center_slider.configure(command=self.test_label_change)
+        self.bind("<FocusIn>", self.meter_bg_change)
         # self.center_slider.configure(command=self.test_label_change)
         # self.bind("<FocusIn>", self.meter_bg_change)
 
@@ -263,18 +266,7 @@ class DrivePage(customtkinter.CTkFrame):
                     self.center_meter.set(int(float(value)))
                 else:
                     print("Invalid value for conversion: ", value)
-            if key == "ENGINE_LOAD":
-                self.convert_to_int(value)
 
-    def convert_to_int(self, value):
-        try:
-            if value.isdigit():
-                return int(value)
-            else:
-                return int(float(value))
-        except ValueError:
-            print("Invalid value for conversion: ", value)
-            return None
 
     def start_recording(self):
         self.is_recording = True
