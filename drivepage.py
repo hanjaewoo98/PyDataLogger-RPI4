@@ -132,7 +132,7 @@ class DrivePage(customtkinter.CTkFrame):
         self.labels["INTAKE_PRESSURE"] = customtkinter.CTkLabel(self.rightbar_frame, width=100,
                                                                 font=customtkinter.CTkFont(size=40, weight="bold"))
         self.labels["INTAKE_PRESSURE"].grid(row=10 + pad_value, column=0, padx=10, sticky="nes")
-        self.right_label_2_2 = customtkinter.CTkLabel(self.rightbar_frame, text="매니폴드압력(kPa)", width=50,
+        self.right_label_2_2 = customtkinter.CTkLabel(self.rightbar_frame, text="흡기압(kPa)", width=50,
                                                       font=customtkinter.CTkFont(size=20, weight="bold"))
         self.right_label_2_2.grid(row=10 + pad_value, column=1, padx=10, sticky="es")
 
@@ -240,4 +240,4 @@ class DrivePage(customtkinter.CTkFrame):
     def recording_loop(self):
         if self.is_recording:
             self.obd_update()
-            self.after(10, self.recording_loop)
+            self.after(70, self.recording_loop)
