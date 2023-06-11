@@ -35,6 +35,7 @@ class DrivePage(customtkinter.CTkFrame):
             "COOLANT_TEMP": "COOLANT_TEMP",  # 냉각수온도, 가져와짐
             "THROTTLE_POS": "THROTTLE_POS",  # 스로틀위치, 가져와짐
             "ENGINE_LOAD": "ENGINE_LOAD",  # 엔진부하, 가져와짐
+            "FUEL_RATE": "FUEL_RATE",  # 연료유량, 가져와짐
         }
 
         for key, text in self.label_texts.items():
@@ -118,10 +119,10 @@ class DrivePage(customtkinter.CTkFrame):
         self.leftbar_frame.grid_columnconfigure(list(range(0, 2)), weight=1)
         self.leftbar_frame.grid_rowconfigure(list(range(0, 40)), weight=1)
 
-        self.labels["FUEL_LEVEL"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
-                                                            font=customtkinter.CTkFont(size=40, weight="bold"))
-        self.labels["FUEL_LEVEL"].grid(row=10, column=0, padx=10, sticky="nws")
-        self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="연료량(%)", width=50,
+        self.labels["FUEL_RATE"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
+                                                           font=customtkinter.CTkFont(size=40, weight="bold"))
+        self.labels["FUEL_RATE"].grid(row=10, column=0, padx=10, sticky="nws")
+        self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="연료소모(L/h)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
         self.left_label_1_2.grid(row=10, column=1, padx=10, sticky="ws")
 
