@@ -258,14 +258,14 @@ class DrivePage(customtkinter.CTkFrame):
                 if value.isdigit():
                     self.center_meter.set(int(value))
                 elif self.is_float(value):
-                    self.center_meter.set(float(value))
+                    self.center_meter.set(int(float(value)))
                 else:
                     print("Invalid value for conversion: ", value)
             if key == "ENGINE_LOAD":
                 if value.isdigit():
-                    self.center_meter.set(int(value))
+                    value = int(value)
                 elif self.is_float(value):
-                    self.center_meter.set(int(value))
+                    value = int(float(value))
                 else:
                     print("Invalid value for conversion: ", value)
 
