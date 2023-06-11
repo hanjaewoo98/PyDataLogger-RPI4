@@ -74,15 +74,50 @@ class DrivePage(customtkinter.CTkFrame):
 
         # 간격
         pad_value = 7
-        # 좌측 값들
+        # # 좌측 값들
+        #
+        # self.leftbar_frame = customtkinter.CTkFrame(self)
+        # self.leftbar_frame.grid(row=0, column=0, rowspan=39, columnspan=2, sticky="news", pady=20, padx=20)
+        # self.leftbar_frame.grid_columnconfigure(list(range(0, 2)), weight=1)
+        # self.leftbar_frame.grid_rowconfigure(list(range(0, 40)), weight=1)
+        #
+        # # self.left_label_1_1 = customtkinter.CTkLabel(self.leftbar_frame, text="45℃", width=100,
+        # #                                             font=customtkinter.CTkFont(size=40, weight="bold"))
+        # self.labels["INTAKE_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
+        #                                                     font=customtkinter.CTkFont(size=40, weight="bold"))
+        # self.labels["INTAKE_TEMP"].grid(row=10, column=0, padx=10, sticky="nws")
+        # self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="흡기온도(℃)", width=50,
+        #                                              font=customtkinter.CTkFont(size=20, weight="bold"))
+        # self.left_label_1_2.grid(row=10, column=1, padx=10, sticky="ws")
+        #
+        # self.labels["CATALYST_TEMP_B1S1"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
+        #                                                            font=customtkinter.CTkFont(size=40, weight="bold"))
+        # self.labels["CATALYST_TEMP_B1S1"].grid(row=10 + pad_value, column=0, padx=10, sticky="nws")
+        # self.left_label_2_2 = customtkinter.CTkLabel(self.leftbar_frame, text="촉매온도(℃)", width=50,
+        #                                              font=customtkinter.CTkFont(size=20, weight="bold"))
+        # self.left_label_2_2.grid(row=10 + pad_value, column=1, padx=10, sticky="ws")
+        #
+        #
+        #
+        # self.left_label_3_1 = customtkinter.CTkLabel(self.leftbar_frame, width=100,
+        #                                              font=customtkinter.CTkFont(size=40, weight="bold"))
+        # self.left_label_3_1.grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
+        #
+        #
+        #
+        #
+        # self.labels["COOLANT_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=50,
+        #                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
+        # self.labels["COOLANT_TEMP"].grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
+        # self.left_label_3_2 = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
+        #                                              font=customtkinter.CTkFont(size=20, weight="bold"))
+        # self.left_label_3_2.grid(row=10 + pad_value * 2, column=1, padx=10, sticky="ws")
 
         self.leftbar_frame = customtkinter.CTkFrame(self)
         self.leftbar_frame.grid(row=0, column=0, rowspan=39, columnspan=2, sticky="news", pady=20, padx=20)
         self.leftbar_frame.grid_columnconfigure(list(range(0, 2)), weight=1)
         self.leftbar_frame.grid_rowconfigure(list(range(0, 40)), weight=1)
 
-        # self.left_label_1_1 = customtkinter.CTkLabel(self.leftbar_frame, text="45℃", width=100,
-        #                                             font=customtkinter.CTkFont(size=40, weight="bold"))
         self.labels["INTAKE_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
                                                             font=customtkinter.CTkFont(size=40, weight="bold"))
         self.labels["INTAKE_TEMP"].grid(row=10, column=0, padx=10, sticky="nws")
@@ -96,12 +131,9 @@ class DrivePage(customtkinter.CTkFrame):
         self.left_label_2_2 = customtkinter.CTkLabel(self.leftbar_frame, text="촉매온도(℃)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
         self.left_label_2_2.grid(row=10 + pad_value, column=1, padx=10, sticky="ws")
-        self.left_label_3_1 = customtkinter.CTkLabel(self.leftbar_frame, width=100,
-                                                     font=customtkinter.CTkFont(size=40, weight="bold"))
-        self.left_label_3_1.grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
 
-        self.labels["COOLANT_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
-                                                             font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.labels["COOLANT_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
+                                                             font=customtkinter.CTkFont(size=40, weight="bold"))
         self.labels["COOLANT_TEMP"].grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
         self.left_label_3_2 = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
