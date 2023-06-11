@@ -252,14 +252,14 @@ class DrivePage(customtkinter.CTkFrame):
                 if value.isdigit():
                     self.center_meter.set(int(value))
                 elif self.is_float(value):
-                    self.center_meter.set(float(value)[:-2])
+                    self.center_meter.set(float(value))
                 else:
                     print("Invalid value for conversion: ", value)
             if key == "RPM":
                 if value.isdigit():
                     self.center_meter.set(int(value))
                 elif self.is_float(value):
-                    self.center_meter.set(float(value)[:-2])
+                    self.center_meter.set(float(value))
                 else:
                     print("Invalid value for conversion: ", value)
 
