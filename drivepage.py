@@ -1,4 +1,8 @@
+import datetime
+
 import customtkinter
+import requests as requests
+
 import settingpage
 import obd
 from tkdial import ScrollKnob
@@ -6,6 +10,8 @@ import pandas as pd
 import tkinter as tk
 import main
 import PIL
+import json
+
 import re
 
 is_recording = False
@@ -28,7 +34,6 @@ class DrivePage(customtkinter.CTkFrame):
             "SPEED": "SPEED",  # 속도, 가져와짐
             "FUEL_LEVEL": "FUEL_LEVEL",  # 연료량, 가져와짐
             "CATALYST_TEMP_B1S1": "CATALYST_TEMP_B1S1",  # 촉매온도, 가져와짐
-            # "OIL_TEMP": "OIL_TEMP",  # 유온, 안가져와짐
             "INTAKE_TEMP": "INTAKE_TEMP",  # 흡기온, 가져와짐
             "INTAKE_PRESSURE": "INTAKE_PRESSURE",  # 매니폴드압,가져와짐
             "RUN_TIME": "RUN_TIME",  # 가동시간, 가져와짐
@@ -44,7 +49,7 @@ class DrivePage(customtkinter.CTkFrame):
 
         # pandas 초기화
         self.df = pd.DataFrame()
-        self.is_recording = False
+        self.is_recording = True
 
         # configure grid layout (40x40)
         self.grid_columnconfigure(list(range(0, 40)), weight=1)
@@ -75,44 +80,6 @@ class DrivePage(customtkinter.CTkFrame):
 
         # 간격
         pad_value = 7
-        # # 좌측 값들
-        #
-        # self.leftbar_frame = customtkinter.CTkFrame(self)
-        # self.leftbar_frame.grid(row=0, column=0, rowspan=39, columnspan=2, sticky="news", pady=20, padx=20)
-        # self.leftbar_frame.grid_columnconfigure(list(range(0, 2)), weight=1)
-        # self.leftbar_frame.grid_rowconfigure(list(range(0, 40)), weight=1)
-        #
-        # # self.left_label_1_1 = customtkinter.CTkLabel(self.leftbar_frame, text="45℃", width=100,
-        # #                                             font=customtkinter.CTkFont(size=40, weight="bold"))
-        # self.labels["INTAKE_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
-        #                                                     font=customtkinter.CTkFont(size=40, weight="bold"))
-        # self.labels["INTAKE_TEMP"].grid(row=10, column=0, padx=10, sticky="nws")
-        # self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="흡기온도(℃)", width=50,
-        #                                              font=customtkinter.CTkFont(size=20, weight="bold"))
-        # self.left_label_1_2.grid(row=10, column=1, padx=10, sticky="ws")
-        #
-        # self.labels["CATALYST_TEMP_B1S1"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
-        #                                                            font=customtkinter.CTkFont(size=40, weight="bold"))
-        # self.labels["CATALYST_TEMP_B1S1"].grid(row=10 + pad_value, column=0, padx=10, sticky="nws")
-        # self.left_label_2_2 = customtkinter.CTkLabel(self.leftbar_frame, text="촉매온도(℃)", width=50,
-        #                                              font=customtkinter.CTkFont(size=20, weight="bold"))
-        # self.left_label_2_2.grid(row=10 + pad_value, column=1, padx=10, sticky="ws")
-        #
-        #
-        #
-        # self.left_label_3_1 = customtkinter.CTkLabel(self.leftbar_frame, width=100,
-        #                                              font=customtkinter.CTkFont(size=40, weight="bold"))
-        # self.left_label_3_1.grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
-        #
-        #
-        #
-        #
-        # self.labels["COOLANT_TEMP"] = customtkinter.CTkLabel(self.leftbar_frame, width=50,
-        #                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
-        # self.labels["COOLANT_TEMP"].grid(row=10 + pad_value * 2, column=0, padx=10, sticky="nws")
-        # self.left_label_3_2 = customtkinter.CTkLabel(self.leftbar_frame, text="냉각수온(℃)", width=50,
-        #                                              font=customtkinter.CTkFont(size=20, weight="bold"))
-        # self.left_label_3_2.grid(row=10 + pad_value * 2, column=1, padx=10, sticky="ws")
 
         self.leftbar_frame = customtkinter.CTkFrame(self)
         self.leftbar_frame.grid(row=0, column=0, rowspan=39, columnspan=2, sticky="news", pady=20, padx=20)
@@ -120,7 +87,7 @@ class DrivePage(customtkinter.CTkFrame):
         self.leftbar_frame.grid_rowconfigure(list(range(0, 40)), weight=1)
 
         self.labels["FUEL_RATE"] = customtkinter.CTkLabel(self.leftbar_frame, width=100,
-                                                           font=customtkinter.CTkFont(size=40, weight="bold"))
+                                                          font=customtkinter.CTkFont(size=40, weight="bold"))
         self.labels["FUEL_RATE"].grid(row=10, column=0, padx=10, sticky="nws")
         self.left_label_1_2 = customtkinter.CTkLabel(self.leftbar_frame, text="연료소모(L/h)", width=50,
                                                      font=customtkinter.CTkFont(size=20, weight="bold"))
@@ -258,7 +225,6 @@ class DrivePage(customtkinter.CTkFrame):
                 else:
                     print("Invalid value for conversion: ", value)
 
-
     def start_recording(self):
         self.is_recording = True
         self.recording_loop()
@@ -270,3 +236,53 @@ class DrivePage(customtkinter.CTkFrame):
         if self.is_recording:
             self.obd_update()
             self.after(50, self.recording_loop)
+
+    def save_data_to_json(data):
+        current_datetime = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"drive_data_{current_datetime}.json"
+        with open(filename, "a") as file:
+            json.dump(data, file)
+            file.write("\n")
+
+    def api_is_working(self):
+        status = False
+        try:
+            response = requests.get('http://obdlogger.site:8000/api/status')
+            if response.status_code == 200:
+                status = True
+            else:
+                status = False
+        finally:
+            return status
+
+    def send_data_to_api(self):
+        data = {
+            "loggedUser": "admin",
+            "datetime": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "avgSpeed": self.labels["SPEED"].cget("text"),
+            "maxSpeed": self.labels["SPEED"].cget("text"),
+            "avgRPM": self.labels["RPM"].cget("text"),
+            "maxRPM": self.labels["RPM"].cget("text"),
+            "avgThrottlePos": self.labels["THROTTLE_POS"].cget("text"),
+            "avgEngineLoad": self.labels["ENGINE_LOAD"].cget("text"),
+            "avgCoolantTemp": self.labels["COOLANT_TEMP"].cget("text"),
+            "avgIntakeTemp": self.labels["INTAKE_TEMP"].cget("text"),
+            "avgDriveTime": self.labels["RUN_TIME"].cget("text")
+        }
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post('http://obdlogger.site:8000/api/drivedata/1', data=json.dumps(data), headers=headers)
+        if response.status_code == 200:
+            print("Data sent successfully")
+        else:
+            print("Failed to send data")
+            self.save_data_to_json(data)
+
+    def recording_loop(self):
+        if self.is_recording:
+            self.obd_update()
+            self.send_data_to_api()
+            self.after(30000, self.recording_loop)
